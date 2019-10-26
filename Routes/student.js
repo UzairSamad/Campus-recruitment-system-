@@ -98,4 +98,73 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// @Post  api/v1/student/login
+
+router.post("/login", async (req, res) => {
+  //destructure username and password
+  let { username, password } = req.body;
+
+  //lowercase username
+  username = username.toLowerCase();
+
+  //validating api params
+
+  //   const { error } = validateApiParams.validate({ username, password });
+  //   if (error) {
+  //     return res.status(400).json({
+  //       succes: false,
+  //       error: error.details[0].message
+  //     });
+  //   }
+  try {
+    //find student
+
+    const student = await Student.findOne({ username });
+    if (!student) {
+      return res.status(400).json({
+        succes: false,
+        message: "Please provide a valid username"
+      });
+    }
+
+    //compare password
+
+    const isMatch = await bcrypt.compare(password, student.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        succes: false,
+        message: "incorrect Password"
+      });
+    }
+
+    //create json web token
+    const payload = {
+      student: {
+        username: student.username,
+        id: student._id
+      }
+    };
+
+    const token = await jwt.sign(payload, JWT_SECRET, {
+      expiresIn: "30d"
+    });
+
+    //send response
+    return res.status(200).json({
+      succes: true,
+      token,
+      username: student.username,
+      id: student._id,
+      email: student.email,
+      gender: student.gender
+    });
+  } catch (error) {
+    return res.status(500).json({
+      succes: false,
+      messae: "internal server error",
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
