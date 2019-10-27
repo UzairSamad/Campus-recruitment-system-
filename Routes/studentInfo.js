@@ -81,4 +81,25 @@ router.post("/details", authstudent, async (req, res) => {
   }
 });
 
+// get-student data
+router.get("/get-details", authstudent, async (req, res) => {
+  try {
+    const detail = await StudentInfo.find({
+      createdBy: { $in: req.student.id }
+    }).populate("createdBy", { password: 0 });
+
+    return res.json({
+      success: true,
+      detail
+    });
+  } catch (error) {
+    console.log("Error:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
