@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongose.Schema;
+const Schema = mongoose.Schema;
 
 const studentInfoSchema = new Schema(
   {
@@ -16,15 +16,20 @@ const studentInfoSchema = new Schema(
       required: true
     },
     address: {
-      type: string,
+      type: String,
       required: true
     },
     contact: {
-      type: string,
+      type: String,
       reequired: true
     },
     skills: {
-      type: string,
+      type: String,
+      required: true
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
       required: true
     }
   },

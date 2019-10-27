@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const email = require("mongoose-type-email");
 
 const StudentSchema = new Schema(
   {

@@ -73,8 +73,8 @@ router.post("/register", async (req, res) => {
 
     const payload = {
       newuser: {
-        username,
-        id: newuser.id
+        username: newuser.username,
+        id: newuser._id
       }
     };
 
@@ -99,6 +99,7 @@ router.post("/register", async (req, res) => {
 });
 
 // @Post  api/v1/student/login
+// login student
 
 router.post("/login", async (req, res) => {
   //destructure username and password
@@ -152,6 +153,7 @@ router.post("/login", async (req, res) => {
     //send response
     return res.status(200).json({
       succes: true,
+      message: "login succesfully",
       token,
       username: student.username,
       id: student._id,

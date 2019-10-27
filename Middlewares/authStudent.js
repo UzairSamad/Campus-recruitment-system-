@@ -7,7 +7,7 @@ const Student = require("../models/student/Student");
 //setting upenviroment variable
 const JWT_SECRET = process.env.JWT_SETRET || config.get("JWT_SECRET");
 
-module.exports = async (req, res) => {
+module.exports = async (req, res, next) => {
   //get token from header and check
   const token = req.header("student-token");
 
@@ -24,7 +24,9 @@ module.exports = async (req, res) => {
     const decoded = await jwt.verify(token, JWT_SECRET);
 
     //check if student exists in db
-    const studentExists = await Student.findById(decoded.student._id);
+    const studentExists = await Student.findById(decoded.student.id);
+    console.log(studentExists);
+
     if (!studentExists) {
       return res.status(400).json({
         succes: false,
@@ -33,13 +35,15 @@ module.exports = async (req, res) => {
     }
 
     //set decoded object in req
+
     req.student = decoded.student;
 
     next();
   } catch (error) {
     return res.status(400).json({
       succes: false,
-      message: "Internal Server Error"
+      message: "Internal Server Error at auth",
+      error: error.message
     });
   }
 };
